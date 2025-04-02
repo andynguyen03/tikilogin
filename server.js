@@ -2,6 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 const fs = require("fs");
+const cors = require("cors");
+
 
 const app = express();
 const port = 3000;
@@ -76,3 +78,4 @@ app.get("/view-log", (req, res) => {
 app.listen(port, () => {
   console.log(`🚀 Server đang chạy tại http://localhost:${port}`);
 });
+app.use(cors());
