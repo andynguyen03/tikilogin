@@ -34,14 +34,26 @@ app.post("/login", (req, res) => {
     });
   });
 });
+
 app.get("/download-log", (req, res) => {
   const logFilePath = path.join("/tmp", "login_data.txt");
+  console.log("Đường dẫn tệp:", logFilePath); // Debug đường dẫn tệp
+
+  if (!fs.existsSync(logFilePath)) {
+    console.log("Tệp không tồn tại."); // Debug thông báo nếu tệp không tồn tại
+    return res
+      .status(404)
+      .json({ success: false, message: "Tệp không tìm thấy." });
+  }
+
   res.download(logFilePath, "login_data.txt", (err) => {
     if (err) {
+      console.error("Lỗi khi gửi tệp: ", err);
       return res
         .status(500)
-        .json({ success: false, message: "Không thể tải tệp." });
+        .json({ success: false, message: "Không thể tải tệp!" });
     }
+    console.log("Tệp đã được gửi thành công.");
   });
 });
 
