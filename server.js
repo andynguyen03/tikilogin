@@ -34,6 +34,16 @@ app.post("/login", (req, res) => {
     });
   });
 });
+app.get("/download-log", (req, res) => {
+  const logFilePath = path.join("/tmp", "login_data.txt");
+  res.download(logFilePath, "login_data.txt", (err) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ success: false, message: "Không thể tải tệp." });
+    }
+  });
+});
 
 // Route mặc định trả về trang login
 app.get("/some-path", (req, res) => {
