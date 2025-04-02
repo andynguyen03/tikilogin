@@ -170,8 +170,7 @@
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
-              console.log(" Đăng nhập thành công! Chuyển hướng...");
-              window.location.href = "https://tiki.vn/";
+              alert("Đăng nhập thành công!");
             } else {
               alert(data.message);
             }
